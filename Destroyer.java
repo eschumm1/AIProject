@@ -1,3 +1,4 @@
 public class Destroyer{
-	private int size = 2;
+	protected int size = 2, hits  = 0;
+	protected boolean destroyed = false;
 }

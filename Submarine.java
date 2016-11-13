@@ -1,3 +1,4 @@
 public class Submarine{
-	private int size = 3;
+	protected int size = 3, hits  = 0;
+	protected boolean destroyed = false;
 }
