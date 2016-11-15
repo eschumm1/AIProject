@@ -1,8 +1,10 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class AI {
     int difficulty;
-    String[] usedSpaces = new String[15];
+    //String[] usedSpaces = new String[15];
+    ArrayList<String> usedSpaces = new ArrayList<String>(15);
     Object[] yourField = new Object[10][10];
     char[][] knownMap = new char[10][10];
     
@@ -43,19 +45,26 @@ public class AI {
 		do{
 			valid = true;
 			
-			int row = (int)(Math.random() * 10);
-			int column = (int)(Math.random() * 10);
-			int direction = (int)(Math.random() * 4);
-			
+			//int row = (int)(Math.random() * 10);
+			//int column = (int)(Math.random() * 10);
+			//int direction = (int)(Math.random() * 4);
+			int direction = 1;
 			//1 = Up, 2 = Down, 3 = Right, 4 = Left
+			
 			switch(direction){
 				case 1:
-					if(row < 5)
-						valid = false;
-					else
-						for(int i = row; i != row - 5; i--)
-							if(Arrays.binarySearch(usedSpaces, Integer.toString(i) + ", " + Integer.toString(column)) >= 0)
-								valid = false;
+					int row = (int)(Math.random() * 5) + 5;
+					int column = (int)(Math.random() * 10);
+					
+					for(int i = row; i != row - 5; i--)
+						if(usedSpaces.contains(Integer.toString(i) + ", " + Integer.toString(column)));
+							valid = false;
+					
+					if(valid){
+						
+					}
+					
+					break;
 				case 2:
 					
 				case 3:
