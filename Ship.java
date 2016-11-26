@@ -9,4 +9,8 @@ public abstract class Ship{
 		
 		return destroyed;
 	}
+
+	public String toString(){
+		return this.getClass().getName();
+	}
 }
