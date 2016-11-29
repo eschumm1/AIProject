@@ -1,12 +1,5 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-
-public class AI {
+public class AI extends Player{
     int difficulty;
-    boolean loss = false;
-    ArrayList<String> usedSpaces = new ArrayList<String>(15);
-    Object[][] yourField = new Object[10][10];
-    char[][] knownMap = new char[10][10];
     
 	public AI(int difficulty){
 	    this.difficulty = difficulty;
@@ -22,19 +15,6 @@ public class AI {
 	
 	public int getDifficulty(){
 	    return this.difficulty;
-	}
-	
-	public boolean getLoss(){
-		return this.loss;
-	}
-	
-	public void doMove(AI opponent){
-		if(this.difficulty == 1)
-			easyMove();
-		else if(this.difficulty == 2)
-			mediumMove();
-		else
-			hardMove();
 	}
 	
 	public void doMove(Player opponent){
@@ -98,22 +78,4 @@ public class AI {
 		Battleship temp = new Battleship();
 		
 	}
-	
-	@Override
-    public String toString(){
-		String total = "";
-		
-		for(Object[] temp1 : yourField){
-			for(Object temp2 : temp1)
-				total += temp2.toString().charAt(0);
-			total += '\n';
-		}
-		
-		for(char[] temp : knownMap){
-			for(char temp2 : temp)
-				total += temp2;
-			total += '\n';
-		}
-		return total;
-    }
 }

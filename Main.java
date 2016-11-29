@@ -4,15 +4,16 @@ import java.io.InputStreamReader;
 
 public class Main{
 	private static int players, difficulty;
-	private static Player player1, player2;
+	private static Human player1, player2;
 	private static AI computer1, computer2;
 	private static boolean won = false;
 	
-	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
-		System.out.println("Welcome to Battleship!\nHow many players will there be? (Enter 0 for computer vs. computer)");
+		System.out.println("Welcome to Battleship!\nHow many players will there be? (Enter 0 for computer vs. computer)");		//Initial welcome message
+		
+		//Loop until a valid number of players is entered. Choices are 0 (AI vs. AI), 1, or 2.
 		do{
 			try {
 				players = Integer.parseInt(br.readLine());
@@ -22,7 +23,9 @@ public class Main{
 			}
 		}while(players < 1 || players > 2);
 		
+		//If there's at least one computer
 		if(players != 2){
+			//Loop until a valid difficulty is entered
 			do{
 				System.out.println("What dificulty should computer 1 be?\n1) Easy\n2) Medium\n3) Hard");
 				try {
@@ -33,16 +36,20 @@ public class Main{
 				}
 			}while(difficulty < 1 || difficulty > 3);
 			
-			AI computer1 = new AI(difficulty);
+			computer1 = new AI(difficulty);
 		}
 		
-		if(players != 0){
-			Player player1 = new Player();
-		}
+		//If there's at least 1 human player
+		if(players != 0)
+			player1 = new Human();
 		
-		if(players == 1){
-			Player player2 = new Player();
-			
+		//If there's 2 human players
+		if(players == 2)	//2
+			player2 = new Human();
+		
+		//If there's no human players
+		if(players == 0){
+			//Loop until a valid difficulty is entered
 			do{
 				System.out.println("What dificulty should computer 2 be?\n1) Easy\n2) Medium\n3) Hard");
 				try {
@@ -53,9 +60,10 @@ public class Main{
 				}
 			}while(difficulty < 1 || difficulty > 3);
 			
-			AI computer2 = new AI(difficulty);
+			computer2 = new AI(difficulty);
 		}
 		
+		//Primary control logic
 		switch(players){
 		case 0:
 			do{
@@ -88,6 +96,7 @@ public class Main{
 			
 		case 2:
 			do{
+				System.out.println(player1.toString());
 				player1.doMove(player2);
 				won = player2.getLoss();
 				if(!won){
