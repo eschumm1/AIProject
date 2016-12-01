@@ -37,6 +37,7 @@ public class Main{
 			}while(difficulty < 1 || difficulty > 3);
 			
 			computer1 = new AI(difficulty);
+			System.out.println(computer1);
 		}
 		
 		//If there's at least 1 human player

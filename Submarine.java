@@ -1,4 +1,7 @@
 public class Submarine extends Ship{
-	protected int size = 3, hits  = 0;
-	protected boolean destroyed = false;
+	
+	public Submarine(){
+		super.size = 3;
+		super.hits  = 0;
+	}
 }

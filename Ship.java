@@ -1,6 +1,6 @@
 public abstract class Ship{
 	protected int size, hits;
-	protected boolean destroyed;
+	protected boolean destroyed = false;
 
 	public boolean isHit(){
 		hits++;

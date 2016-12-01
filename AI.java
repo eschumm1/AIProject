@@ -6,11 +6,15 @@ public class AI extends Player{
 	    
 	    for(int i = 0; i < 10; i++)
     		for(int j = 0; j < 10; j++){
-    			yourField[i][j] = '~';
-    			knownMap[i][j] = '~';
+    			super.yourField[i][j] = "~";
+    			super.knownMap[i][j] = '~';
     		}
 	    
-	    placeShips();
+        placeShip(new Carrier());
+        placeShip(new Battleship());
+        placeShip(new Cruiser());
+        placeShip(new Destroyer());
+        placeShip(new Submarine());	
 	}
 	
 	public int getDifficulty(){
@@ -38,72 +42,48 @@ public class AI extends Player{
 	private void hardMove(){
 		
 	}
-	
-	private void placeShips() {
-            System.out.println("Press");
-            Carrier carrier = new Carrier();
-            placeShip(carrier);
-
-            Battleship battleship = new Battleship();
-            placeShip(battleship);
-
-            Cruiser cruiser = new Cruiser();
-            placeShip(cruiser);
-
-            Destroyer destroyer = new Destroyer();
-            placeShip(destroyer);
-	
-            Submarine submarine = new Submarine();
-            placeShip(submarine);	
-	}
 
 	private void placeShip(Ship ship) {
-            System.out.println("Press any");
             boolean valid;
+            
             do {
                 valid = true;
-
-                //int row = (int)(Math.random() * 10);
-                //int column = (int)(Math.random() * 10);
                 int row, column;
                 int direction = (int) (Math.random() * 4);
-                //int direction = 1;
+                
                 //0 = Up, 1 = Down, 2 = Left, 3 = Right
-
                 switch (direction) {
-                    case 0:
+                    case 0:                    	
                         row = (int) (Math.random() * (10 - ship.size)) + ship.size;
                         column = (int) (Math.random() * 10);
 
-                        for (int i = row; i != row - ship.size; i--) {
-                            if (usedSpaces.contains(Integer.toString(i) + ", " + Integer.toString(column))) {
-                                valid = false;
-                            }
+                        for (int i = row; i != row - ship.size && valid; i--){
+                        	if(yourField[i][column] != "~")
+                        		valid = false;
                         }
-
-                        if (valid) {
-                            for (int i = row; i != row - ship.size; i--) {
-                                usedSpaces.add(Integer.toString(i) + ", " + Integer.toString(column));
-                            }
-                        }
-
+                        
+                        if(!valid)
+                        	continue;
+                        
+                        for (int i = row; i != row - ship.size; i--)
+                        	super.yourField[i][column] = ship;
+                        
                         break;
 
                     case 1:
                         row = (int) (Math.random() * (10 - ship.size));
                         column = (int) (Math.random() * 10);
 
-                        for (int i = row; i != row + ship.size; i++) {
-                            if (usedSpaces.contains(Integer.toString(i) + ", " + Integer.toString(column))) {
-                                valid = false;
-                            }
+                        for (int i = row; i != row + ship.size && valid; i++){
+                        	if(yourField[i][column] != "~")
+                        		valid = false;
                         }
 
-                        if (valid) {
-                            for (int i = row; i != row + ship.size; i++) {
-                                usedSpaces.add(Integer.toString(i) + ", " + Integer.toString(column));
-                            }
-                        }
+                        if(!valid)
+                        	continue;
+                        
+                        for (int i = row; i != row + ship.size; i++)
+                        	yourField[i][column] = ship;
 
                         break;
 
@@ -111,17 +91,16 @@ public class AI extends Player{
                         row = (int) (Math.random() * 10);
                         column = (int) (Math.random() * (10 - ship.size)) + ship.size;
 
-                        for (int i = column; i != column - ship.size; i--) {
-                            if (usedSpaces.contains(Integer.toString(row) + ", " + Integer.toString(i))) {
-                                valid = false;
-                            }
+                        for (int i = column; i != column - ship.size && valid; i--){
+                        	if(yourField[row][i] != "~")
+                        		valid = false;
                         }
-
-                        if (valid) {
-                            for (int i = column; i != column - ship.size; i--) {
-                                usedSpaces.add(Integer.toString(row) + ", " + Integer.toString(i));
-                            }
-                        }
+                        
+                        if(!valid)
+                        	continue;
+                        
+                        for (int i = column; i != column - ship.size; i--)
+                            yourField[row][i] = ship;
 
                         break;
 
@@ -129,24 +108,20 @@ public class AI extends Player{
                         row = (int) (Math.random() * 10);
                         column = (int) (Math.random() * (10 - ship.size));
 
-                        for (int i = column; i != column + ship.size; i++) {
-                            if (usedSpaces.contains(Integer.toString(row) + ", " + Integer.toString(i))) {
-                                valid = false;
-                            }
+                        for (int i = column; i != column + ship.size && valid; i++){
+                        	if(yourField[row][i] != "~")
+                        		valid = false;
                         }
 
-                        if (valid) {
-                            for (int i = column; i != column + ship.size; i++) {
-                                usedSpaces.add(Integer.toString(row) + ", " + Integer.toString(i));
-                            }
-                        }
-
-                        break;
+                        if(!valid)
+                        	continue;
                         
+                        for (int i = column; i != column + ship.size; i++)
+                            yourField[row][i] = ship;
+                        
+                        break;                        	
                 }
-
-            } while (!valid);
-
+            } while(!valid);
 	}
         
 }

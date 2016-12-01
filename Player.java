@@ -14,17 +14,17 @@ public abstract class Player {
     public String toString(){
 		String total = "";
 		
-		for(Object[] temp1 : yourField){
-			for(Object temp2 : temp1)
-				total += temp2.toString().charAt(0) + " ";
+		for(char[] temp : knownMap){
+			for(char temp2 : temp)
+				total += temp2 + " ";
 			total += '\n';
 		}
 		
 		total += "-------------------\n";
 		
-		for(char[] temp : knownMap){
-			for(char temp2 : temp)
-				total += temp2 + " ";
+		for(Object[] temp1 : yourField){
+			for(Object temp2 : temp1)
+				total += temp2.toString().charAt(0) + " ";
 			total += '\n';
 		}
 		return total;
