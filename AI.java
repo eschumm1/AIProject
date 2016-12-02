@@ -1,8 +1,10 @@
 public class AI extends Player{
     int difficulty;
+    //String name;
     
-	public AI(int difficulty){
+	public AI(int difficulty, String name){
 	    this.difficulty = difficulty;
+	    super.name = name;
 	    
 	    for(int i = 0; i < 10; i++)
     		for(int j = 0; j < 10; j++){
@@ -23,7 +25,7 @@ public class AI extends Player{
 	
 	public void doMove(Player opponent){
 		if(this.difficulty == 1)
-			easyMove();
+			easyMove(opponent);
 		else if(this.difficulty == 2)
 			mediumMove();
 		else
@@ -31,8 +33,35 @@ public class AI extends Player{
 	}
 	
 	//TODO
-	private void easyMove(){
+	private void easyMove(Player opponent){
+		int row = (int)(Math.random() * 10);
+		int column = (int)(Math.random() * 10);
+		boolean destroyed;
 		
+		try{
+			Ship target = (Ship)(opponent.yourField[row][column]);
+			destroyed = target.isHit();
+			
+			
+			if(!destroyed)
+				System.out.println(this.name + " hit " + opponent.name + "'s " + target.getClass().getName().toString() + "!");
+			else
+				System.out.println(this.name + " destroyed " + opponent.name + "'s " + target.getClass().getName().toString() + "!");
+			
+			opponent.yourField[row][column] = "X";
+			this.knownMap[row][column] = 'X';
+			
+		} catch(Exception ex){
+			if(this.knownMap[row][column] == '~'){
+				System.out.println(this.name + " missed!");
+				opponent.yourField[row][column] = "O";
+				this.knownMap[row][column] = 'O';
+			}
+			else{
+				System.out.println(this.name + " already hit that space!");
+				easyMove(opponent);
+			}
+		}
 	}
 
 	private void mediumMove(){

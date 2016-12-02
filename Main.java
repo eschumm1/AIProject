@@ -19,9 +19,9 @@ public class Main{
 				players = Integer.parseInt(br.readLine());
 			} catch (IOException e) {
 				System.err.println("Invalid entry.");
-				players = 0;
+				players = -1;
 			}
-		}while(players < 1 || players > 2);
+		}while(players < 0 || players > 2);
 		
 		//If there's at least one computer
 		if(players != 2){
@@ -36,8 +36,7 @@ public class Main{
 				}
 			}while(difficulty < 1 || difficulty > 3);
 			
-			computer1 = new AI(difficulty);
-			System.out.println(computer1);
+			computer1 = new AI(difficulty, "Computer 1");
 		}
 		
 		//If there's at least 1 human player
@@ -54,14 +53,14 @@ public class Main{
 			do{
 				System.out.println("What dificulty should computer 2 be?\n1) Easy\n2) Medium\n3) Hard");
 				try {
-					difficulty = System.in.read();
+					difficulty = Integer.parseInt(br.readLine());
 				} catch (IOException e) {
 					System.err.println("Invalid entry.");
 					difficulty = 0;
 				}
 			}while(difficulty < 1 || difficulty > 3);
 			
-			computer2 = new AI(difficulty);
+			computer2 = new AI(difficulty, "Computer 2");
 		}
 		
 		//Primary control logic
@@ -70,12 +69,13 @@ public class Main{
 			do{
 				System.out.println("Press any key for the next player...");
 				new java.util.Scanner(System.in).nextLine();
+				System.out.println("Computer 1's field:\n" + computer1);
 				computer1.doMove(computer2);
 				won = computer2.getLoss();
 				
 				if(!won){
-					System.out.println("Press any key for the next player...");
-					new java.util.Scanner(System.in).nextLine();
+					//System.out.println("Press any key for the next player...");
+					//new java.util.Scanner(System.in).nextLine();
 					computer2.doMove(computer1);
 					won = computer1.getLoss();
 				}

@@ -4,6 +4,7 @@ public abstract class Player {
 	ArrayList<String> usedSpaces = new ArrayList<String>(15);
     Object[][] yourField = new Object[10][10];
     char[][] knownMap = new char[10][10];
+    public String name;
     boolean loss = false;
     
     public boolean getLoss(){
