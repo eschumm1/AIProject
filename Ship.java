@@ -4,6 +4,7 @@ public abstract class Ship{
 
 	public boolean isHit(){
 		hits++;
+		
 		if (hits == size)
 			destroyed = true;
 		

@@ -1,15 +1,21 @@
 import java.util.ArrayList;
 
 public abstract class Player {
-	ArrayList<String> usedSpaces = new ArrayList<String>(15);
-    Object[][] yourField = new Object[10][10];
-    char[][] knownMap = new char[10][10];
-    public String name;
-    boolean loss = false;
+	protected ArrayList<String> usedSpaces = new ArrayList<String>(15);
+    protected Object[][] yourField = new Object[10][10];
+    protected char[][] knownMap = new char[10][10];
+    protected String name;
+    protected boolean loss = false;
+    protected int shipsDestroyed = 0;
     
     public boolean getLoss(){
-		return false;
+    	if(shipsDestroyed == 5)
+    		return true;
+    	
+    	return false;
     }
+    
+    public abstract void doMove(Player opponent);
     
     @Override
     public String toString(){

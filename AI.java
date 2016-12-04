@@ -1,6 +1,5 @@
 public class AI extends Player{
     int difficulty;
-    //String name;
     
 	public AI(int difficulty, String name){
 	    this.difficulty = difficulty;
@@ -44,21 +43,23 @@ public class AI extends Player{
 			
 			
 			if(!destroyed)
-				System.out.println(this.name + " hit " + opponent.name + "'s " + target.getClass().getName().toString() + "!");
-			else
-				System.out.println(this.name + " destroyed " + opponent.name + "'s " + target.getClass().getName().toString() + "!");
+				System.out.println("\n" + this.name + " hit " + opponent.name + "'s " + target.getClass().getName().toString() + "!");
+			else{
+				System.out.println("\n" + this.name + " destroyed " + opponent.name + "'s " + target.getClass().getName().toString() + "!");
+				opponent.shipsDestroyed++;
+			}
 			
 			opponent.yourField[row][column] = "X";
 			this.knownMap[row][column] = 'X';
 			
 		} catch(Exception ex){
 			if(this.knownMap[row][column] == '~'){
-				System.out.println(this.name + " missed!");
+				System.out.println("\n" + this.name + " missed!");
 				opponent.yourField[row][column] = "O";
 				this.knownMap[row][column] = 'O';
 			}
 			else{
-				System.out.println(this.name + " already hit that space!");
+				System.out.println("\n" + this.name + " already hit that space!");
 				easyMove(opponent);
 			}
 		}
