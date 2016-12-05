@@ -9,16 +9,16 @@ public class Board {
     public int size = 100;
    // public int type; // AI = 0, human = 1
 
-    private ArrayList<Ship> ships = new ArrayList<Ship>(5);
+    public ArrayList<Ship> ships = new ArrayList<Ship>(5);
     private int[] field = new int[100]; // char representation of field - only 1 for ship and 0 for notship
 
-    public Board(int type) {
+    public Board() {
         Arrays.fill(this.field,0); // default get filled with zero?
        // if(type == 0) { generateBoard(); }
     }
 
     public char at(int pos) {
-        return (this.field[pos] == 1) ? 'X' : '~'; // returns 1 if ship there, 0 if not
+        if( field[pos] > 0) { return 'X'; } else { return '~';}// returns 1 if ship there, 0 if not
     }
 
     // assumes you have determined there is a ship there
@@ -74,18 +74,18 @@ public class Board {
 
         for(int z = 0; z < ship.size; z++) {
 
-            switch(direction % 2) {
-                case 0: { p = pos + z*orient*10; } // move one col in + or - direction
-                case 1: { p = pos + z*orient; } // move one row in + or - direction
+            switch (direction % 2) {
+                case 0: { p = pos + z*orient*10; break; } // move one col in + or - direction
+                case 1: { p = pos + z*orient; break; } // move one row in + or - direction
             }
-            if((p < 0) || (p > 99)) { return false; } // if spot already taken/off - NOT valid move
+            if((p < 0) || (p > 99) || ((p % 9 == 0) && (z != ship.size-1))) { return false; } // if spot already taken/off - NOT valid move
             if(this.field[p] == 1) { return false; }
             coords[z] = p; // else add to coordinate list
         }
 
         ship.coordinates = coords;
         this.ships.add(ship);
-        for(int zz = 0; zz < ship.size; zz++) { this.field[coords[zz]] = 1; System.out.println("Placed at " + coords[zz] + "\n"); } // for debugging
+        //for(int zz = 0; zz < ship.size; zz++) { field[coords[zz]] = 1; System.out.println("Placed at " + coords[zz] + "\n"); } // for debugging
 
         return true;
     }

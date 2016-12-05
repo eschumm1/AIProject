@@ -5,7 +5,7 @@ public abstract class Player {
 	public ArrayList<String> usedSpaces = new ArrayList<String>(15);
 	public char[] knownMap = new char[100];
 	//public char
-	public Board yourField = new Board(1);
+	public Board yourField = new Board(); //1);
 
 	protected String name;
 	protected boolean loss = false;
@@ -25,11 +25,9 @@ public abstract class Player {
 
 	public String mark(int pos) {
 		if(yourField.at(pos) == '~') {
-			return "You missed!\n";
+			return "missed!\n";
 		}
-		if(yourField.at(pos) == 'X') {
-			return "You already hit that space!\n"; // until I change, turn is over
-		}
+
 		// determine your ship at position
 		String hitstr = "";
 		boolean sunk = false;

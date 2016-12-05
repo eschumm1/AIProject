@@ -9,12 +9,13 @@ public class Ship {
 
 	public Ship(String name) {
 		this.name = name;
-		switch(name)
-		{ 	case "battleship": { this.size = 4; }
-			case "carrier": { this.size = 5; }
-			case "cruiser": { this.size = 3; }
-			case "destroyer": { this.size = 2; }
-			case "submarine": { this.size = 3; } }
+		switch(this.name)
+		{ 	case "battleship": { this.size = 4; break; }
+			case "carrier": { this.size = 5; break; }
+			case "cruiser": { this.size = 3; break; }
+			case "destroyer": { this.size = 2; break; }
+			case "submarine": { this.size = 3; break; } }
+		//System.out.println(" New " + this.name + "with size " + this.size + "\n");
 		display = new char[this.size] ; Arrays.fill(display, 'O');
 	}
 

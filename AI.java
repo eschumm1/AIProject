@@ -1,6 +1,6 @@
 public class AI extends Player{
     int difficulty;
-    public Board yourField = new Board(0);
+//    public Board yourField = new Board(0);
 
     public AI(int difficulty, String name){
         this.difficulty = difficulty;
@@ -12,7 +12,7 @@ public class AI extends Player{
                 super.knownMap[i*10 + j] = '~';
             }
 
-        this.placeShip( new Ship("carrier"));
+        this.placeShip( new Ship("carrier") );
         this.placeShip( new Ship("battleship") );
         this.placeShip( new Ship("cruiser") );
         this.placeShip( new Ship("destroyer") );
@@ -41,7 +41,7 @@ public class AI extends Player{
 
         hit = opponent.mark(pos); // returns "hit [type]" "miss" or "destroyed [type]"
 
-        System.out.println(this.name + hit);
+        System.out.println(this.name + " " + hit);
 			
         knownMap[pos] = (hit.contains("miss")) ? 'O' : 'X'; // mark move in map
 	}
@@ -68,47 +68,52 @@ public class AI extends Player{
 
             //0 = Down, 1 = Left, 2 = Up, 3 = Right
             switch (direction) {
-                case 0:
+                case 0: {
                     row = (int) (Math.random() * (10 - ship.size)) + ship.size;
                     column = (int) (Math.random() * 10);
                     valid = yourField.place(ship, row, column, direction);
 
-                    if (!valid) { continue; }
-                    System.out.println("ship at " + row + " " + column + "\n");
+                    if (!valid) {
+                        continue;
+                    }
                     break;
-
-                case 1:
+                }
+                case 1: {
                     row = (int) (Math.random() * (10 - ship.size));
                     column = (int) (Math.random() * 10);
 
                     valid = yourField.place(ship, row, column, direction);
 
-                    if (!valid) { continue; }
-                    System.out.println("ship at " + row + "" + column + "\n");
+                    if (!valid) {
+                        continue;
+                    }
 
                     break;
-
-                case 2:
+                }
+                case 2: {
                     row = (int) (Math.random() * 10);
                     column = (int) (Math.random() * (10 - ship.size)) + ship.size;
 
                     valid = yourField.place(ship, row, column, direction);
 
-                    if (!valid) { continue; }
-                    System.out.println("ship at " + row + "" + column + "\n");
+                    if (!valid) {
+                        continue;
+                    }
 
                     break;
-
-                default:
+                }
+                case 3: {
                     row = (int) (Math.random() * 10);
                     column = (int) (Math.random() * (10 - ship.size));
 
                     valid = yourField.place(ship, row, column, direction);
 
-                    if (!valid) { continue; }
-                    System.out.println("ship at " + row + "" + column + "\n");
+                    if (!valid) {
+                        continue;
+                    }
 
                     break;
+                }
             }
         } while (!valid);
     }
