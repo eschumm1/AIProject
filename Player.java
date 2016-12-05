@@ -1,38 +1,56 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public abstract class Player {
-	protected ArrayList<String> usedSpaces = new ArrayList<String>(15);
-    protected Object[][] yourField = new Object[10][10];
-    protected char[][] knownMap = new char[10][10];
-    protected String name;
-    protected boolean loss = false;
-    protected int shipsDestroyed = 0;
-    
-    public boolean getLoss(){
-    	if(shipsDestroyed == 5)
-    		return true;
-    	
-    	return false;
-    }
-    
-    public abstract void doMove(Player opponent);
-    
+	public ArrayList<String> usedSpaces = new ArrayList<String>(15);
+	public char[] knownMap = new char[100];
+	//public char
+	public Board yourField = new Board(1);
+
+	protected String name;
+	protected boolean loss = false;
+	protected int shipsDestroyed = 0;
+
+	public void fillBoard() {
+		Arrays.fill(this.knownMap, '~');
+	}
+
+
+	public boolean getLoss(){
+		if(shipsDestroyed == 5)
+			return true;
+
+		return false;
+	}
+
+	public String mark(int pos) {
+		if(yourField.at(pos) == '~') {
+			return "You missed!\n";
+		}
+		if(yourField.at(pos) == 'X') {
+			return "You already hit that space!\n"; // until I change, turn is over
+		}
+		// determine your ship at position
+		String hitstr = "";
+		boolean sunk = false;
+		// mark your ship as hit
+		hitstr = yourField.addHit(pos);
+		return hitstr;
+
+	}
+
     @Override
     public String toString(){
 		String total = "";
 		
-		for(char[] temp : knownMap){
-			for(char temp2 : temp)
-				total += temp2 + " ";
-			total += '\n';
+		for(int i = 0; i < 100; i++){
+			total += this.knownMap[i] + ((i % 9 == 0) ? "\n" : "");
 		}
 		
 		total += "-------------------\n";
-		
-		for(Object[] temp1 : yourField){
-			for(Object temp2 : temp1)
-				total += temp2.toString().charAt(0) + " ";
-			total += '\n';
+
+		for(int i = 0; i < 100; i++){
+			total += (this.yourField.at(i)) + ((i % 9 == 0) ? "\n" : "");
 		}
 		return total;
     }
