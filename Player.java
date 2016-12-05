@@ -15,7 +15,6 @@ public abstract class Player {
 		Arrays.fill(this.knownMap, '~');
 	}
 
-
 	public boolean getLoss(){
 		if(shipsDestroyed == 5)
 			return true;
@@ -42,14 +41,21 @@ public abstract class Player {
 		String total = "";
 		
 		for(int i = 0; i < 100; i++){
-			total += this.knownMap[i] + ((i % 9 == 0) ? "\n" : "");
+			if (i % 10 == 0)
+				total += "\n";
+			
+			total += this.knownMap[i] + " ";
 		}
 		
-		total += "-------------------\n";
-
+		total += "\n-------------------";
+		
 		for(int i = 0; i < 100; i++){
-			total += (this.yourField.at(i)) + ((i % 9 == 0) ? "\n" : "");
+			if (i % 10 == 0)
+				total += "\n";
+			
+			total += this.yourField.at(i) + " ";
 		}
+		
 		return total;
     }
 

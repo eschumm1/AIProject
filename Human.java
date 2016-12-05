@@ -40,7 +40,7 @@ public class Human extends Player {
 				System.out.println("You already made that move! \n");
 				row = -1; column = -1;
 			}
-		}while((row >= 10) || (row < 0) || (column >= 10) || (column < 0));
+		} while((row >= 10) || (row < 0) || (column >= 10) || (column < 0));
 
 		int pos = row*10 + column;
 		String hit;
