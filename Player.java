@@ -14,7 +14,9 @@ public abstract class Player {
 	public void fillBoard() {
 		Arrays.fill(this.knownMap, '~');
 	}
-
+	
+	public abstract void doMove(Player opponent);
+	
 	public boolean getLoss(){
 		if(shipsDestroyed == 5)
 			return true;

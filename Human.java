@@ -4,11 +4,13 @@ import java.io.InputStreamReader;
 
 public class Human extends Player {
 	
-	public Human() {
+	public Human(String name) {
 		for(int i = 0; i < 10; i++)
     		for(int j = 0; j < 10; j++){
 				super.knownMap[i*10 + j] = '~';
     		}
+		
+		super.name = name;
 	}
 	
 	public void doMove(Player opponent){
