@@ -4,6 +4,7 @@ import java.util.Arrays;
 public abstract class Player {
 	public ArrayList<String> usedSpaces = new ArrayList<String>(15);
 	public char[] knownMap = new char[100];
+	public int[] intmap = new int[100];
 	//public char
 	public Board yourField = new Board(); //1);
 
@@ -38,7 +39,8 @@ public abstract class Player {
 
 	}
 
-    public String toString(Player opponent){
+    @Override
+    public String toString(){
 		String total = "";
 		
 		for(int i = 0; i < 100; i++){
@@ -51,33 +53,13 @@ public abstract class Player {
 		total += "\n-------------------";
 		
 		for(int i = 0; i < 100; i++){
-			boolean found = false;
-			
 			if (i % 10 == 0)
 				total += "\n";
 			
-			//total += opponent.knownMap[i] + " ";
-			if(opponent.knownMap[i] == '~')
-				for(Ship ship : this.yourField.ships)
-					for(int current : ship.coordinates)
-						if(current == i){
-							total += ship.name.charAt(0) + " ";
-							found = true;
-						}
-			
-			if(!found)
-				total += opponent.knownMap[i] + " ";
-						
+			total += this.yourField.at(i) + " ";
 		}
 		
 		return total;
-    }
-    
-    //toString function for use during ship placement
-    @Override
-    public String toString(){
-		return null;
-		
     }
 
 }
