@@ -156,28 +156,18 @@ int main(int argc, char *argv[]) {
 	double * ships;
 
 
-	int n = 2^5; /* number of boards to be generated */
-	
-  if ( (n % np) != 0)
-  {
-    if (id == 0)
-    {
-      printf("Error: np must divide n!\n");
-      printf("  n = %d, np = %d, n%%np = %d\n", n, np, (n%np));
-    }
-    MPI_Abort(MPI_COMM_WORLD, 1);
-  }
+	int n = 64; /* number of boards to be generated */
 
 	ships = allocate_double_vector(N*N*nships); /* keep track of ship probs */
 	memset(ships, 0, N*N*nships);
 	
 	generateBoard(ships, N, n, np);
 
-	int i;
-	for(i = 0; i < (N*N*nships); i++) {
-		if(i % nships == 0) { printf("\n"); }
-		printf(" %f ", ships[i]);
-	}
+	//int i;
+	//for(i = 0; i < (N*N*nships); i++) {
+//		if(i % nships == 0) { printf("\n"); }
+//		printf(" %f ", ships[i]);
+	//}
 	 
 	double * fullres;
 	int u, v;
@@ -193,7 +183,7 @@ int main(int argc, char *argv[]) {
 				sum += (ships[v*nships + u]/(u+2));
 			}
 			printf("sum for col %d is %f\n",u,sum);
-		}
+		} printf(" \n");
 		free(fullres); 
 	}
 
