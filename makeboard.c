@@ -1,0 +1,196 @@
+/* 
+ * This file provides a method to generate arbitrary battleship boards in an effort
+ *  to evaluate the probabilities of each ship(carrier(5), cruiser(3), bship(4), sub(3), destr(2))
+ *  occurring at any given space.
+ * A serial implementation will be provided (so this can be translated to java), then a 
+ *  parallel method compatible with MPI is given.
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <time.h>
+
+
+double *allocate_double_vector (int n)
+{
+  double *x;
+
+  x = (double*) calloc (n, sizeof(double));
+
+  if (x == NULL)
+  {
+    fprintf (stderr, "Problem allocating memory for vector\n");
+#ifdef PARALLEL
+    MPI_Abort (MPI_COMM_WORLD, 1);
+#else
+    exit (1);
+#endif
+  }
+
+  return x;
+}
+
+int *allocate_int_vector (int n) {
+  int *x;
+
+  x = (int*) calloc (n, sizeof(int));
+
+  if (x == NULL)
+  {
+    fprintf (stderr, "Problem allocating memory for vector\n");
+#ifdef PARALLEL
+    MPI_Abort (MPI_COMM_WORLD, 1);
+#else
+    exit (1);
+#endif
+  }
+  return x;
+}
+
+/* randomly shuffle array of size n */
+/* implements the fisher-yates shuffle */
+void shuffleArr(int * arr, int n) {
+	for(int i = n-1; i > 0; i--) {
+		int ind = rand() % (i+1);
+		int t = arr[i];
+		arr[i] = arr[ind];
+		arr[ind] = t;
+	}
+}
+
+int posIsValid(int pos, int l_size, int dir, int orient, int N, int * used) {
+	int y, sq;
+	for(y = 0; y < l_size; y++) { 
+		if(orient == 10) { 
+			sq = pos + (-1*N*dir*y);
+			} else { sq = pos + dir*y; }
+		if(used[sq]) { return 0; }
+	}
+	return 1;
+}
+/*
+ * Generates a test board and adds the respective probailities of each ship to
+ *  the ships[] vector
+ * Input: ships[] where 0 = destroyer, 1=sub OR cruiser (equal prob), 2=bship, 3=carrier
+ * 				int N = dimension of the board (default 10)
+ *				int n = # boards to generate
+ */
+void generateBoard(double * ships, int N, int n) {
+	int * sizes = allocate_int_vector(5);
+	sizes[0] = 2;
+	sizes[1] = 3;
+	sizes[2] = 3;	/* done explcitly to make shuffling easier - one alloc v n */
+	sizes[3] = 4;
+	sizes[4] = 5; 
+	
+	time_t t;
+	srand((unsigned) time(&t));
+	
+	int * used;
+	used = allocate_int_vector(N*N);
+	int i, z, y, w, sq, dir, orient, l_size, pos, u;
+	int valid;
+	
+		for(i = 0; i < n; i++) {
+		//memset(board,0,sizeof(board)); // set board to 0s
+			
+		/* place 5 ships */
+
+		/* Randomly */
+		shuffleArr(sizes, 5); 
+		
+		for(z = 0; z < 5; z++) {
+			valid = 0;
+			/* select size */
+			l_size = sizes[z];
+			/* ==> take random direction */
+			dir = pow(-1, rand());
+			orient = (rand() % 2) ? 1 : 10 ; /* 1 csp to left/right, 10 to up/down */
+			/* select position on board */
+			/* string together ternary operator for bounds checking */
+						/* check if valid given size, bounds */
+//			pos = (orient==1)  ? ((dir>0) ? (rand() % (N-l_size))*(rand() % N)  : ((l_size-1)+(rand() % (N-l_size)))*(rand() % N)) : (dir>0) ? (N*(l_size-1)) + (rand() % ((N*N)-(N*(l_size-1)))) : rand() % ((N*l_size)-1); 				
+			/* check if space open */
+			while(!valid) {
+				pos = (orient==1)  ? ((dir>0) ? (rand() % (N-l_size-1))*(rand() % N)  : ((l_size-1)+(rand() % (N-l_size+1)))*(rand() % N)) : ((dir>0) ? (N*(l_size-1)) + (rand() % ((N*N)-(N*(l_size-1)))) : rand() % ((N*l_size)-1)); 
+				// now check if adjacent ones valid
+				valid = posIsValid(pos, l_size, dir, orient, N, used);
+			} /* should be valid now */
+			printf("size = %d orient = %d dir = %d pos = %d \n\n",l_size,orient,dir,pos);
+			
+			/* if valid, fill appropriate squares with 1 AND  
+			 *  update ships(position(0..99)*10 + size) by 1/n
+			 */
+			for(w = 0; w < l_size; w++) { 
+				if(orient == 10) { sq = pos + (N*-1*dir*w); }  else { sq = pos + (dir*w); }
+				printf("square for ship %d is %d\n",l_size,sq);
+				used[sq] = 1;
+				ships[(l_size-2)] = ships[(l_size-2)] + 1; // + (1/n); // normalize the data for all iterations n - want avg
+			}
+		}
+		
+		for(u = 0; u < N*N; u++) {
+			if(u%10==0) { printf("\n"); }
+			printf(" %d ",used[u]);
+		}
+		printf("\n");
+		memset(used,0,N*N*sizeof(int));
+		}
+	 
+	free(used);
+
+	
+}
+
+
+int main() {
+	int nships = 5;
+	int N = 10; /* board dimension ,size=N*N */
+	double * ships;
+	ships = allocate_double_vector(N*N*nships); /* keep track of ship probs */
+	memset(ships, 0, N*N*nships);
+	int n = 5;//1000; /* number of boards to be generated */
+	
+	generateBoard(ships, N, n);
+	
+/*	int i;
+	for(i = 0; i < (N*N); i++) {
+		printf(" %ld ", ships[i]);
+		if(i % 9) { fprintf("\n"); }
+	}
+	*/
+	
+
+
+	free(ships);
+	
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
