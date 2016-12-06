@@ -9,8 +9,7 @@
  */
 
 /*
- * TODO:  generate a board based on known information k[] 
- *				determine relative efficiency
+ * TODO:  
  *				* Convert to parallel code for maya
  */
 
@@ -66,11 +65,68 @@ void shuffleArr(int * arr, int n) {
 	}
 }
 
+
+int posIsValid(int pos, int l_size, int dir, int orient, int N, int * used) {
+	int y, sq;
+	for(y = 0; y < l_size; y++) { 
+		sq = (orient == 10) ? (pos + (-1*N*dir*y)) : (pos + dir*y);
+		if(used[sq]) { return 0; }
+	}
+	return 1;
+}
+
+/*
+ * Generates a test board and adds the respective probailities of each ship to
+ *  the ships[] vector
+ * Input: ships[] where 0 = destroyer, 1=sub OR cruiser (equal prob), 2=bship, 3=carrier
+ * 				int N = dimension of the board (default 10)
+ *				int n = # boards to generate
+ */
+void generateBoard(double * ships, int N, int n) {
+	int * sizes = allocate_int_vector(5);
+	sizes[0] = 2; sizes[1] = 3; sizes[2] = 3;	sizes[3] = 4; sizes[4] = 5; 
+	
+	int * used;
+	used = allocate_int_vector(N*N);
+	int i, z, y, w, sq, dir, orient, l_size, pos, u;
+	int valid;
+	double avgfactor = (1.0/n);
+  srand(time(NULL));
+
+		for(i = 0; i < n; i++) {			
+		/* place 5 ships */
+		shuffleArr(sizes, 5); 
+		for(z = 0; z < 5; z++) {
+			valid = 0;
+			/* select size */
+			l_size = sizes[z];
+			/* ==> take random direction */
+			dir = pow(-1, rand());
+			orient = (rand() % 2) ? 1 : 10 ; /* 1 csp to left/right, 10 to up/down */
+			/* select position on board */
+			/* string together ternary operator for bounds checking */
+			while(!valid) {
+					pos = (orient==1)  ? ((dir>0) ? (rand() % (N-l_size+1))*(rand() % N)  : (((l_size-1)+(rand() % (N-l_size+1)))*(rand() % N))) : ((dir>0) ? ((N*(l_size-1)) + (rand() % ((N*N)-(N*(l_size-1))))) : (rand() % (N*N-(N*l_size-1)))); 
+				
+				valid = posIsValid(pos, l_size, dir, orient, N, used);
+			} /* should be valid now */
+
+			for(w = 0; w < l_size; w++) { 
+				sq = (orient == 10) ? (pos + (N*-1*dir*w)) :  (pos + (dir*w));
+				used[sq] = 1;
+				ships[(l_size-2)+(sq*4)] += ( (l_size == 3) ? avgfactor*(1.0/2.0) : avgfactor ); 
+			}
+		}
+		memset(used,0,N*N*sizeof(int));
+	}
+	free(used);
+}
+
 /*
  * 	int[] k = information known about the board
  *   k[i] = {-1:unknown, 0:miss, 1:hit, 2-5 ships}
  */
-int posIsValid(int pos, int l_size, int dir, int orient, int N, int * used, int * k) {
+int posIsValidK(int pos, int l_size, int dir, int orient, int N, int * used, int * k) {
 	int y, sq;
 	for(y = 0; y < l_size; y++) { 
 		sq = (orient == 10) ? (pos + (-1*N*dir*y)) : (pos + dir*y);
@@ -98,7 +154,7 @@ void generateBoardWithK(double * shipProbK, int N, int n, int * k) {
 	used = allocate_int_vector(N*N);
 	int * used_known;
 	used_known = allocate_int_vector(N*N);
-	int i, z, y, w, sq, dir, orient, l_size, pos, u, h;
+	int i, z, y, w, sq, dir, orient, l_size, pos, h;
 	int MAX_SHIP = 5;
 	int shps = 5;
 	int valid;
@@ -111,7 +167,6 @@ void generateBoardWithK(double * shipProbK, int N, int n, int * k) {
 	int nhits = 0;
 	int sizz[5] = {2,3,3,4,5}; 
 	int hitpts[17] = {0}; 
-	int nup = 0, ndown = 0;
 	
 	/* have to determine ship length to know which ships still to place */		
 	for(q = 0; q < (N*N); q++) {
@@ -128,43 +183,32 @@ void generateBoardWithK(double * shipProbK, int N, int n, int * k) {
 				used_known[q + h*dir] = 1;
 			}
 			if(s_siz > 1) {
-				printf("previous placed ship length %d near %d ! \n",s_siz,q);
 				shps--; 
 				if(s_siz == 2) { sizz[0] = -1; }
 				else if(s_siz == 3) { if(sizz[1] == -1) { sizz[2] = -1; } else { sizz[1] = -1; } }
 				else if(s_siz == 4) { sizz[3] = -1; }
 				else if(s_siz == 5) { sizz[4] = -1; }
 			}
-			// sizes[k[q]-2] -= k[q] so it's zero dean207you
+
 		} 
-		if(k[q] == 1) { hitpts[nhits] = q; nhits++; printf("hit at %d \n",q); } // get the coor, increment hits
+		if(k[q] == 1) { hitpts[nhits] = q; nhits++; } 
 	}			
-	printf("nhist = %d\n",nhits);
+
 	int * sizes = allocate_int_vector(shps);
 	/* done explcitly to make shuffling easier - one alloc v n */
 	for(h = 0; h < MAX_SHIP; h++) {
-		if(sizz[h] != -1) { if(h >= shps) {sizes[h-(MAX_SHIP-shps)] = sizz[h];} else {sizes[h] = sizz[h];} }
+		if(sizz[h] != -1) {
+			if(h >= shps) {sizes[h-(MAX_SHIP-shps)] = sizz[h];} else {sizes[h] = sizz[h];} }
 	}
 	
 	for(i = 0; i < n; i++) {	
 		memcpy(used, used_known, N*N*sizeof(int)); // get the known board
-		/* place known ships */
-		/* start by assuming they're valid since they're input */
-					
-		/* place 5 ships */
-		/* Randomly */
 		shuffleArr(sizes, shps); 
 		hts = nhits;
 		for(z = 0; z < shps; z++) {
 			
 			valid = 0;
 			l_size = sizes[z];
-
-			/* generate ships on hits first */
-//			for(h = 0; h < hts; h++) {
-//				pos = hitpts[h];
-				/* check if subsequent hits */
-//			}
 
 			while(!valid) {
 				dir = pow(-1, rand());
@@ -177,10 +221,9 @@ void generateBoardWithK(double * shipProbK, int N, int n, int * k) {
 				else {
 					pos = (orient==1)  ? ((dir>0) ? (rand() % (N-l_size+1))*(rand() % N)  : (((l_size-1)+(rand() % (N-l_size+1)))*(rand() % N))) : ((dir>0) ? ((N*(l_size-1)) + (rand() % ((N*N)-(N*(l_size-1))))) : (rand() % (N*N-(N*l_size-1)))); 
 				}
-				valid = posIsValid(pos, l_size, dir, orient, N, used, k);
+				valid = posIsValidK(pos, l_size, dir, orient, N, used, k);
 				if(hts && valid) { hts--; }
 			} /* should be valid now */
-				printf("BOARD i=%d size = %d orient = %d dir = %d pos = %d \n\n",i,l_size,orient,dir,pos);
 
 			for(w = 0; w < l_size; w++) { 
 				sq = (orient == 10) ? (pos + (N*-1*dir*w)) :  (pos + (dir*w));
@@ -188,18 +231,9 @@ void generateBoardWithK(double * shipProbK, int N, int n, int * k) {
 				shipProbK[(l_size-2)+(sq*4)] += ( (l_size == 3) ? avgfactor*(1.0/2.0) : avgfactor ); 
 			}
 		}
-		
-		for(q = 0; q < (N*N); q++) {
-			if(q % 10 == 0) printf("\n");
-			printf(" %d ",used[q]);
-		}
-		printf("\n");
 	}
-	 
 	free(used_known);
 	free(used);
-
-	
 }
 
 /*
@@ -208,9 +242,6 @@ void generateBoardWithK(double * shipProbK, int N, int n, int * k) {
  * N is the dimension of the board
 */
 void generateIncompleteBoard(int * k, int N) {
-	/* place a (start with small) amount of: misses, hits, ships */
-	/* Maybe want to test them independently ==> then combined? */
-	
 	srand(time(NULL));
 	int n_miss, n_hit;
 	int n_ship; /* Want to place randomly, according to rules in board generation */
@@ -249,43 +280,38 @@ int main() {
 	 *			This way they correspond to (ship-2) = column in ships[]
 	 */
 	
-	int n = 500;
+	int n = 5000;
 	int s;
 	int * k;	
 	k = allocate_int_vector(N*N);
 	memset(k,(-1),N*N*sizeof(int));
 
 	generateIncompleteBoard(k, N); 
-	
-	for(s = 0; s < (N*N); s++) {
-		if(s%10 == 0) printf("\n");
-		printf(" %d ",k[s]);
-	}
-	
 	/* modified generateBoard to take in data matrix */
 	generateBoardWithK(shipProbK, N, n, k);
 
 
 	
-/*	int i;
+	int i;
 	for(i = 0; i < (N*N*nships); i++) {
 		if(i % nships == 0) { printf("\n"); }
-		printf(" %f ", ships[i]);
+		printf(" %f ", shipProbK[i]);
 	}
-*/	 
+		 
 	
-/*	int u, v;
+	int u, v;
 	double sum;
 	
+	/*
 	for(u = 0; u < nships; u++) { // confirm model adds properly
 		sum = 0;
 		for(v = 0; v < N*N; v++) {
-			sum += (ships[v*nships + u]/(u+2));
+			sum += (shipProbK[v*nships + u]/(u+2));
 		}
 		printf("sum for col %d is %f\n",u,sum);
-	}*/
+	}
 
-	free(shipProbK);
+	free(shipProbK);*/
 	
 	
 }
