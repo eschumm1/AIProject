@@ -88,7 +88,7 @@ void generateBoard(double * ships, int N, int n) {
 	
 	int * used;
 	used = allocate_int_vector(N*N);
-	int i, z, y, w, sq, dir, orient, l_size, pos, u;
+	int i, z, y, w, sq, dir, orient, l_size, pos, u,yy;
 	int valid;
 	double avgfactor = (1.0/n);
   srand(time(NULL));
@@ -110,6 +110,7 @@ void generateBoard(double * ships, int N, int n) {
 				
 				valid = posIsValid(pos, l_size, dir, orient, N, used);
 			} /* should be valid now */
+			printf("BOARD i=%d size = %d orient = %d dir = %d pos = %d \n\n",i,l_size,orient,dir,pos);
 
 			for(w = 0; w < l_size; w++) { 
 				sq = (orient == 10) ? (pos + (N*-1*dir*w)) :  (pos + (dir*w));
@@ -117,6 +118,10 @@ void generateBoard(double * ships, int N, int n) {
 				ships[(l_size-2)+(sq*4)] += ( (l_size == 3) ? avgfactor*(1.0/2.0) : avgfactor ); 
 			}
 		}
+		for(yy = 0; yy < N*N; yy++) {
+			if(yy % 10 == 0) printf("\n");
+			printf(" %d ", used[yy]);
+		} printf("\n");
 		memset(used,0,N*N*sizeof(int));
 	}
 	free(used);
@@ -154,7 +159,7 @@ void generateBoardWithK(double * shipProbK, int N, int n, int * k) {
 	used = allocate_int_vector(N*N);
 	int * used_known;
 	used_known = allocate_int_vector(N*N);
-	int i, z, y, w, sq, dir, orient, l_size, pos, h;
+	int i, z, y, w, sq, dir, orient, l_size, pos, h, yy;
 	int MAX_SHIP = 5;
 	int shps = 5;
 	int valid;
@@ -225,12 +230,20 @@ void generateBoardWithK(double * shipProbK, int N, int n, int * k) {
 				if(hts && valid) { hts--; }
 			} /* should be valid now */
 
+			printf("K-Board i=%d size = %d orient = %d dir = %d pos = %d \n\n",i,l_size,orient,dir,pos);
 			for(w = 0; w < l_size; w++) { 
 				sq = (orient == 10) ? (pos + (N*-1*dir*w)) :  (pos + (dir*w));
 				used[sq] = 1;
 				shipProbK[(l_size-2)+(sq*4)] += ( (l_size == 3) ? avgfactor*(1.0/2.0) : avgfactor ); 
 			}
 		}
+		
+		for(yy = 0; yy < N*N; yy++) {
+			if(yy % 10 == 0) printf("\n");
+			printf(" %d ", used[yy]);
+		} printf("\n");
+		memset(used,0,N*N*sizeof(int));
+		
 	}
 	free(used_known);
 	free(used);
@@ -266,52 +279,69 @@ void generateIncompleteBoard(int * k, int N) {
 int main() {
 	int nships = 4;
 	int N = 10; /* board dimension ,size=N*N */
+
+
+	double * ships;
+	ships = allocate_double_vector(N*N*nships); /* keep track of ship probs */
+	memset(ships, 0, N*N*nships);
+	int n = 100000; //1000; /* number of boards to be generated */
+	
+	generateBoard(ships, N, n);
+
+	printf("n = %d \n",n);
+	int i;
+	for(i = 0; i < (N*N*nships); i++) {
+		if(i % nships == 0) { printf("\n"); }
+		printf(" %f ", ships[i]);
+	}
+	
+	int u, v;
+	double sum;
+	
+	for(u = 0; u < nships; u++) { // confirm model adds properly
+		sum = 0;
+		for(v = 0; v < N*N; v++) {
+			sum += (ships[v*nships + u]/(u+2));
+		}
+		printf("\nsum for col %d is %f\n",u,sum);
+	}
+	
+	
 	double * shipProbK;
-	shipProbK = allocate_double_vector(N*N*nships); /* keep track of ship probs */
+	shipProbK = allocate_double_vector(N*N*nships); 
 	memset(shipProbK, 0, N*N*nships);
-	
-	/*
-	 * k is a vector that holds a board state on it
-	 * => This provides us with constraints to add in board generation
-	 * => This way we can generate a local strategy each turn
-	 * Contains: hits, misses, ships 
-	 * To test: generate some incomplete gameplay boards (your view of opponent)
-	 * 		Note: 0 for miss, 1 for hit, 2=destr,3=sub/cruiser,4=battleship,5=carrier
-	 *			This way they correspond to (ship-2) = column in ships[]
-	 */
-	
-	int n = 5000;
+
 	int s;
 	int * k;	
 	k = allocate_int_vector(N*N);
 	memset(k,(-1),N*N*sizeof(int));
 
 	generateIncompleteBoard(k, N); 
-	/* modified generateBoard to take in data matrix */
-	generateBoardWithK(shipProbK, N, n, k);
-
-
+	// print the shitty board
+	for(int u = 0; u < N*N; u++) {
+		if(u % 10 == 0) printf("\n");
+	} printf("\n");
 	
-	int i;
+	generateBoardWithK(shipProbK, N, n, k);
+	
+	printf("n = %d \n",n);
+	
 	for(i = 0; i < (N*N*nships); i++) {
 		if(i % nships == 0) { printf("\n"); }
 		printf(" %f ", shipProbK[i]);
 	}
-		 
-	
-	int u, v;
-	double sum;
-	
-	/*
 	for(u = 0; u < nships; u++) { // confirm model adds properly
 		sum = 0;
 		for(v = 0; v < N*N; v++) {
 			sum += (shipProbK[v*nships + u]/(u+2));
-		}
-		printf("sum for col %d is %f\n",u,sum);
+				}
+		printf("\nsum for col %d is %f\n",u,sum);
 	}
 
-	free(shipProbK);*/
+	free(shipProbK);
+	
+	
+	free(ships);
 	
 	
 }
