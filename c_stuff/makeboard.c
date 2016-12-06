@@ -141,7 +141,7 @@ int main() {
 	
 	generateBoard(ships, N, n);
 
-/*	
+	
 	int i;
 	for(i = 0; i < (N*N*nships); i++) {
 		if(i % nships == 0) { printf("\n"); }
@@ -149,7 +149,7 @@ int main() {
 	}
 	 
 	
-	int u, v;
+/*	int u, v;
 	double sum;
 	
 	for(u = 0; u < nships; u++) { // confirm model adds properly
