@@ -12,11 +12,11 @@ public class AI extends Player{
                 super.knownMap[i*10 + j] = '~';
             }
 
-        this.placeShip( new Ship("carrier") );
-        this.placeShip( new Ship("battleship") );
-        this.placeShip( new Ship("cruiser") );
-        this.placeShip( new Ship("destroyer") );
-        this.placeShip( new Ship("submarine") );
+        this.placeShip( new Ship("Carrier") );
+        this.placeShip( new Ship("Battleship") );
+        this.placeShip( new Ship("Cruiser") );
+        this.placeShip( new Ship("Destroyer") );
+        this.placeShip( new Ship("Submarine") );
     }
 
     public int getDifficulty(){
@@ -34,11 +34,17 @@ public class AI extends Player{
 	}
 
 	private void easyMove(Player opponent){
-		int row = (int)(Math.random() * 10);
-		int column = (int)(Math.random() * 10);
-		int pos = row*10 + column;
+		int row;// = (int)(Math.random() * 10);
+		int column;// = (int)(Math.random() * 10);
+		int pos;// = row*10 + column;
 		String hit;
-
+		
+		do{
+			row = (int)(Math.random() * 10);
+			column = (int)(Math.random() * 10);
+			pos = row*10 + column;
+		} while(this.knownMap[pos] != '~');
+		
         hit = opponent.mark(pos); // returns "hit [type]" "miss" or "destroyed [type]"
 
         System.out.println(this.name + " " + hit);
