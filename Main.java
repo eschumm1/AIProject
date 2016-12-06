@@ -125,7 +125,7 @@ public class Main{
 				else{
 					current = computer1;
 					opponent = computer2;
-					System.out.println("\n" + current.name + "'s field:\n" + current);
+					System.out.println("\n" + current.name + "'s field:\n" + current.toString(opponent));
 					System.out.println("Press any key for the next player...");
 					new java.util.Scanner(System.in).nextLine();
 				}
@@ -138,7 +138,7 @@ public class Main{
 				else{
 					current = player1;
 					opponent = computer1;
-					System.out.println("\n" + current.name +"'s field:\n" + current);
+					System.out.println("\n" + current.name +"'s field:\n" + current.toString(opponent));
 					System.out.println("Press any key to continue...");
 					new java.util.Scanner(System.in).nextLine();
 				}

@@ -22,6 +22,7 @@ public class Human extends Player {
 	
 	public void doMove(Player opponent){
 		boolean repeat = false;
+		
 		do{
 			System.out.print("Row: ");
 			try {
@@ -42,7 +43,7 @@ public class Human extends Player {
 			if((row < 0) || (row >= 10) || (column < 0) || (column >= 10)) {
 				System.out.println("Bad coordinates. try again \n");
 			}
-			else if(knownMap[row*10 + column] == 'X') {
+			else if(knownMap[row*10 + column] != '~') {
 				System.out.println("You already made that move! \n");
 				row = -1; column = -1;
 			}
@@ -60,25 +61,29 @@ public class Human extends Player {
 		boolean valid;
 		int direction;
 
-      	    	valid = true;
-    	   	do {
+      	valid = true;
+      	
+	   	do {
 			System.out.print("Choose a row to place your " + ship.name + ": ");
+			
 			try {
 				row = Integer.parseInt(br.readLine());
 			} catch (IOException e) {
 				System.err.println("Invalid entry.");
 				row = -1;
 			}
-
+	
 			System.out.print("Choose a column to place your ship: ");
+			
 			try {
 				column = Integer.parseInt(br.readLine());
 			} catch (IOException e) {
 				System.err.println("Invalid entry.");
 				column = -1;
 			}
-
+	
 			System.out.println("What direction should the ship be?\n0) Down\n1) Left\n2) Up\n3) Right");
+			
 			try {
 				direction= Integer.parseInt(br.readLine());
 			} catch (IOException e) {
@@ -86,7 +91,7 @@ public class Human extends Player {
 				direction = -1;
 			}
 			valid = yourField.place(ship, row, column, direction);
-
+	
 			if((row >= 10) || (row < 0) || (column >= 10) || (column < 0) || (direction < 0) || (direction > 4)) {
 				System.out.println("Bad coordinates. try again \n");
 			}
@@ -94,7 +99,7 @@ public class Human extends Player {
 			if((!valid)) {
 				System.out.println("You already placed a ship in that position! \n");
 			}
-
+	
 		} while((row >= 10) || (row < 0) || (column >= 10) || (column < 0) || (direction < 0) || (direction > 4) || (!valid));
 
 	}

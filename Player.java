@@ -38,8 +38,7 @@ public abstract class Player {
 
 	}
 
-    @Override
-    public String toString(){
+    public String toString(Player opponent){
 		String total = "";
 		
 		for(int i = 0; i < 100; i++){
@@ -52,13 +51,33 @@ public abstract class Player {
 		total += "\n-------------------";
 		
 		for(int i = 0; i < 100; i++){
+			boolean found = false;
+			
 			if (i % 10 == 0)
 				total += "\n";
 			
-			total += this.yourField.at(i) + " ";
+			//total += opponent.knownMap[i] + " ";
+			if(opponent.knownMap[i] == '~')
+				for(Ship ship : this.yourField.ships)
+					for(int current : ship.coordinates)
+						if(current == i){
+							total += ship.name.charAt(0) + " ";
+							found = true;
+						}
+			
+			if(!found)
+				total += opponent.knownMap[i] + " ";
+						
 		}
 		
 		return total;
+    }
+    
+    //toString function for use during ship placement
+    @Override
+    public String toString(){
+		return null;
+		
     }
 
 }

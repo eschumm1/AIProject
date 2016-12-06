@@ -78,13 +78,17 @@ public class Board {
                 case 0: { p = pos + z*orient*10; break; } // move one col in + or - direction
                 case 1: { p = pos + z*orient; break; } // move one row in + or - direction
             }
-            if((p < 0) || (p > 99) || ((p % 9 == 0) && (z != ship.size-1))) { return false; } // if spot already taken/off - NOT valid move
+            if((p < 0) || (p > 99) || ((p % 10 == 0) && (z != ship.size-1))) { return false; } // if spot already taken/off - NOT valid move
             if(this.field[p] == 1) { return false; }
             coords[z] = p; // else add to coordinate list
         }
 
         ship.coordinates = coords;
         this.ships.add(ship);
+        
+        for(int temp : ship.coordinates)
+        	this.field[temp] = 1;
+        
         //for(int zz = 0; zz < ship.size; zz++) { field[coords[zz]] = 1; System.out.println("Placed at " + coords[zz] + "\n"); } // for debugging
 
         return true;
