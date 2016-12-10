@@ -24,6 +24,7 @@ public class Human extends Player {
 	
 	public void doMove(Player opponent){
 		boolean repeat = false;
+		
 		do{
 			System.out.print("Row: ");
 			try {
@@ -44,7 +45,7 @@ public class Human extends Player {
 			if((row < 0) || (row >= 10) || (column < 0) || (column >= 10)) {
 				System.out.println("Bad coordinates. try again \n");
 			}
-			else if(knownMap[row*10 + column] == 'X') {
+			else if(knownMap[row*10 + column] != '~') {
 				System.out.println("You already made that move! \n");
 				row = -1; column = -1;
 			}
@@ -63,7 +64,8 @@ public class Human extends Player {
 		boolean valid;
 		int direction;
 
-      	    	valid = true;
+      	    valid = true;
+      	    
     	   	do {
 			System.out.print("Choose a row to place your " + ship.name + ": ");
 			try {

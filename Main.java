@@ -63,59 +63,6 @@ public class Main{
 		}
 		
 		//Primary control logic
-		/*switch(players){
-			case 0:
-				do{
-					System.out.println("Press any key for the next player...");
-					new java.util.Scanner(System.in).nextLine();
-					current = computer1;
-					System.out.println("Computer 1's field:\n" + current);
-					current.doMove(computer2);
-					won = computer2.getLoss();
-					
-					if(!won){
-						current = computer2;
-						current.doMove(computer1);
-						won = computer1.getLoss();
-					}
-				} while(!won);
-				
-				break;
-				
-			case 1:
-				do{
-					current = player1;
-					current.doMove(computer1);
-					won = computer1.getLoss();
-					
-					if(!won){
-						current = computer1;
-						current.doMove(player1);
-						won = player1.getLoss();
-					}
-				} while(!won);
-				
-				break;
-				
-			case 2:
-				do{
-					current = player1;
-					System.out.println(current.toString());
-					current.doMove(player2);
-					won = player2.getLoss();
-					
-					if(!won){
-						current = player2;
-						System.out.println("Press any key for the next player...");
-						new java.util.Scanner(System.in).nextLine();
-						current.doMove(player1);
-						won = player1.getLoss();
-					}
-				} while(!won);
-				
-				break;
-		}*/
-		
 		do{
 			if(players == 0){
 				if(current != null && current.equals(computer1)){
@@ -125,7 +72,7 @@ public class Main{
 				else{
 					current = computer1;
 					opponent = computer2;
-					System.out.println("\n" + current.name + "'s field:\n" + current);
+					System.out.println("\n" + current.name + "'s field:\n" + current.toString(opponent));
 					System.out.println("Press any key for the next player...");
 					new java.util.Scanner(System.in).nextLine();
 				}
@@ -138,7 +85,7 @@ public class Main{
 				else{
 					current = player1;
 					opponent = computer1;
-					System.out.println("\n" + current.name +"'s field:\n" + current);
+					System.out.println("\n" + current.name +"'s field:\n" + current.toString(opponent));
 					System.out.println("Press any key to continue...");
 					new java.util.Scanner(System.in).nextLine();
 				}

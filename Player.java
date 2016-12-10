@@ -35,12 +35,14 @@ public abstract class Player {
 		boolean sunk = false;
 		// mark your ship as hit
 		hitstr = yourField.addHit(pos);
+		if(hitstr.contains("sunk"))
+			this.shipsDestroyed++;
+		
 		return hitstr;
 
 	}
 
-    @Override
-    public String toString(){
+    public String toString(Player opponent){
 		String total = "";
 		
 		for(int i = 0; i < 100; i++){
@@ -53,10 +55,21 @@ public abstract class Player {
 		total += "\n-------------------";
 		
 		for(int i = 0; i < 100; i++){
+			boolean found = false;
+			
 			if (i % 10 == 0)
 				total += "\n";
 			
-			total += this.yourField.at(i) + " ";
+			if(opponent.knownMap[i] == '~')
+				for(Ship ship : this.yourField.ships)
+					for(int current : ship.coordinates)
+						if(current == i){
+							total += ship.name.charAt(0) + " ";
+							found = true;
+						}
+			
+			if(!found)
+				total += opponent.knownMap[i] + " ";		
 		}
 		
 		return total;

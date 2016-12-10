@@ -18,7 +18,10 @@ public class Board {
     }
 
     public char at(int pos) {
-        if( field[pos] > 0) { return 'X'; } else { return '~';}// returns 1 if ship there, 0 if not
+        if( field[pos] > 0)
+        	return 'X';
+        
+        return '~'; // returns 1 if ship there, 0 if not
     }
 
     // assumes you have determined there is a ship there
@@ -30,7 +33,12 @@ public class Board {
 
         for(Ship ship : ships) {
             for(int n = 0; n < ship.size; n++) {
-                if(ship.coordinates[n] == pos) { dest = ship.isHit(); ship.display[n] = 'X'; type = ship.name; break; };
+                if(ship.coordinates[n] == pos) {
+                	dest = ship.isHit();
+                	ship.display[n] = 'X';
+                	type = ship.name;
+                	break;
+                }
             }
         }
 
@@ -57,7 +65,7 @@ public class Board {
          *  1) pick a ship to place randomly -  (not done yet)
          *  2) pick point, direction which doesn't violate space constraints
          */
-        ;
+        //;
 
     //}
 
@@ -78,7 +86,7 @@ public class Board {
                 case 0: { p = pos + z*orient*10; break; } // move one col in + or - direction
                 case 1: { p = pos + z*orient; break; } // move one row in + or - direction
             }
-            if((p < 0) || (p > 99) || ((p % 9 == 0) && (z != ship.size-1))) { return false; } // if spot already taken/off - NOT valid move
+            if((p < 0) || (p > 99) || ((p % 10 == 0) && (z != ship.size-1))) { return false; } // if spot already taken/off - NOT valid move
             if(this.field[p] == 1) { return false; }
             coords[z] = p; // else add to coordinate list
         }

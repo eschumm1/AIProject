@@ -24,11 +24,11 @@ public class AI extends Player{
                 super.knownMap[i*10 + j] = '~';
             }
         //long st = System.currentTimeMillis();
-        this.placeShip( new Ship("carrier") );
-        this.placeShip( new Ship("battleship") );
-        this.placeShip( new Ship("cruiser") );
-        this.placeShip( new Ship("destroyer") );
-        this.placeShip( new Ship("submarine") );
+        this.placeShip( new Ship("Carrier") );
+        this.placeShip( new Ship("Battleship") );
+        this.placeShip( new Ship("Cruiser") );
+        this.placeShip( new Ship("Destroyer") );
+        this.placeShip( new Ship("Submarine") );
         //long e = System.currentTimeMillis() - st; currently takes 1 millisecond to make a board
         //float e1 = e/1000F;
         //System.out.printf("%.10f",e1);
@@ -66,7 +66,7 @@ public class AI extends Player{
 
         ArrayList<Double> doubles = new ArrayList<Double>();
         Scanner scan;
-        File file = new File("/Users/Silent/Documents/UMBC/CS471/proj/local_bship/model.txt");
+        File file = new File("model.txt");
         try {
             scan = new Scanner(file);
 
@@ -103,13 +103,14 @@ public class AI extends Player{
 		int column = (int)(Math.random() * 10);
 		int pos = row*10 + column;
 		String hit;
-        		do{
-            			row = (int)(Math.random() * 10);
-            			column = (int)(Math.random() * 10);
-            			pos = row*10 + column;
-            		} while(this.knownMap[pos] != '~');
+		
+		do{
+    			row = (int)(Math.random() * 10);
+    			column = (int)(Math.random() * 10);
+    			pos = row*10 + column;
+    		} while(this.knownMap[pos] != '~');
 
-                hit = opponent.mark(pos); // returns "hit [type]" "miss" or "destroyed [type]"
+        hit = opponent.mark(pos); // returns "hit [type]" "miss" or "destroyed [type]"
 
         System.out.println(this.name + " " + hit);
 			
