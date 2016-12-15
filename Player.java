@@ -74,5 +74,30 @@ public abstract class Player {
 		
 		return total;
     }
+    
+    @Override
+    public String toString(){
+		String total = "  A B C D E F G H I J";
+		boolean found;
+		
+		for(int i = 0; i < 100; i++){
+			found = false;
+			
+			if(i % 10 == 0)
+				total += "\n" + String.valueOf(i / 10) + " ";
+			
+			if(this.yourField.at(i) != 0)
+				for(Ship ship : this.yourField.ships)
+					for(int current : ship.coordinates)
+						if(current == i){
+							total += ship.name.charAt(0) + " ";
+							found = true;
+						}
+			if(!found)
+				total += "~ ";
+		}
+		
+		return total;
+    }
 
 }

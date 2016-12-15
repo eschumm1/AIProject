@@ -64,9 +64,11 @@ public class Human extends Player {
 		boolean valid;
 		int direction;
 
-      	    valid = true;
-      	    
-    	   	do {
+      	valid = true;
+      	
+      	System.out.println(this.toString());
+      	   
+    	do {
 			System.out.print("Choose a row to place your " + ship.name + ": ");
 			try {
 				row = Integer.parseInt(br.readLine());
@@ -90,6 +92,7 @@ public class Human extends Player {
 				System.err.println("Invalid entry.");
 				direction = -1;
 			}
+			
 			valid = yourField.place(ship, row, column, direction);
 
 			if((row >= 10) || (row < 0) || (column >= 10) || (column < 0) || (direction < 0) || (direction > 4)) {
