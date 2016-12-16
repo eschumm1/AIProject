@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 public class Human extends Player {
 	int row, column;
+	String[] location = new String[2];
 	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
 	public Human(String name) {
@@ -14,11 +15,11 @@ public class Human extends Player {
     		}
 
 		super.name = name;
-      		this.placeShip( new Ship("carrier") );
-     	 	this.placeShip( new Ship("battleship") );
-      		this.placeShip( new Ship("cruiser") );
-      		this.placeShip( new Ship("destroyer") );
-     		this.placeShip( new Ship("submarine") );
+      		this.placeShip( new Ship("Carrier") );
+     	 	this.placeShip( new Ship("Battleship") );
+      		this.placeShip( new Ship("Cruiser") );
+      		this.placeShip( new Ship("Destroyer") );
+     		this.placeShip( new Ship("Submarine") );
      		Arrays.fill(this.intmap, -1);
 	}
 	
@@ -69,41 +70,32 @@ public class Human extends Player {
       	System.out.println(this.toString());
       	   
     	do {
-			System.out.print("Choose a row to place your " + ship.name + ": ");
-			try {
-				row = Integer.parseInt(br.readLine());
-			} catch (IOException e) {
-				System.err.println("Invalid entry.");
-				row = -1;
-			}
-
-			System.out.print("Choose a column to place your ship: ");
-			try {
-				column = Integer.parseInt(br.readLine());
-			} catch (IOException e) {
-				System.err.println("Invalid entry.");
-				column = -1;
-			}
-
-			System.out.println("What direction should the ship be?\n0) Down\n1) Left\n2) Up\n3) Right");
-			try {
+    		try {
+    			System.out.println("\nWhere would you like to place the beginning of your " + ship.toString() + " (" + ship.size + " spaces)?");
+				location[0] = br.readLine();
+				
+				if(location[0].length() != 2)
+					throw new Exception();
+				
+				System.out.println("What direction will the end of the ship be in?\n0) Up\n1) Left\n2) Down\n3) Right");
 				direction= Integer.parseInt(br.readLine());
-			} catch (IOException e) {
-				System.err.println("Invalid entry.");
-				direction = -1;
+				location = location[0].split("");
+				location[0] = String.valueOf((int)location[0].toUpperCase().charAt(0) - (int)'A');
+				
+				if(Integer.valueOf(location[0]) < 0 || Integer.valueOf(location[0]) > 9 || Integer.valueOf(location[1]) < 0
+						|| Integer.valueOf(location[1]) > 9 || direction < 0 || direction > 4)
+					throw new Exception();
+			} catch (Exception e) {
+				System.out.println("Invalid entry. Please try again \n");
+				continue;
 			}
-			
-			valid = yourField.place(ship, row, column, direction);
-
-			if((row >= 10) || (row < 0) || (column >= 10) || (column < 0) || (direction < 0) || (direction > 4)) {
-				System.out.println("Bad coordinates. try again \n");
-			}
+    		
+			valid = yourField.place(ship, Integer.parseInt(location[1]), Integer.parseInt(location[0]), direction);
 	
-			if((!valid)) {
-				System.out.println("You already placed a ship in that position! \n");
-			}
+			if(!valid)
+				System.out.println("Sorry, that wasn't a valid entry.\n");
 
-		} while((row >= 10) || (row < 0) || (column >= 10) || (column < 0) || (direction < 0) || (direction > 4) || (!valid));
+		} while(!valid);
 
 	}
 
