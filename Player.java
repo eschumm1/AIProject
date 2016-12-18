@@ -32,7 +32,6 @@ public abstract class Player {
 
 		// determine your ship at position
 		String hitstr = "";
-		boolean sunk = false;
 		// mark your ship as hit
 		hitstr = yourField.addHit(pos);
 		if(hitstr.contains("sunk"))
@@ -43,22 +42,22 @@ public abstract class Player {
 	}
 
     public String toString(Player opponent){
-		String total = "";
+		String total = "  A B C D E F G H I J";
 		
 		for(int i = 0; i < 100; i++){
 			if (i % 10 == 0)
-				total += "\n";
+				total += "\n" + String.valueOf(i / 10) + " ";
 			
 			total += this.knownMap[i] + " ";
 		}
 		
-		total += "\n-------------------";
+		total += "\n-------------------\n  A B C D E F G H I J";
 		
 		for(int i = 0; i < 100; i++){
 			boolean found = false;
 			
 			if (i % 10 == 0)
-				total += "\n";
+				total += "\n" + String.valueOf(i / 10) + " ";
 			
 			if(opponent.knownMap[i] == '~')
 				for(Ship ship : this.yourField.ships)

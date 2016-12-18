@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
 
 /**
  * Created by Silent on 12/4/16.
@@ -73,9 +72,10 @@ public class Board {
     /* direction := 0:Down, 1:Left, 2:Up, 3:Right*/
     public boolean place(Ship ship, int row, int col, int direction) {
         int[] coords = new int[ship.size];
-
-        int pos = row*10 + (col);
-        if(pos < 0 || pos > 99) { return false; }
+        int pos = row * 10 + (col);
+        
+        if(pos < 0 || pos > 99)
+        	return false;
 
         int orient = (direction - 2 >= 0) ? 1 : -1; // direction that you move
         int p = 0;
@@ -83,18 +83,35 @@ public class Board {
         for(int z = 0; z < ship.size; z++) {
 
             switch (direction % 2) {
-                case 0: { p = pos + z*orient*10; break; } // move one col in + or - direction
-                case 1: { p = pos + z*orient; break; } // move one row in + or - direction
+                case 0: 
+                	p = pos + z * orient * 10; // move one col in + or - direction
+                	break;
+                	
+                case 1: 
+                	p = pos + z * orient; // move one row in + or - direction
+                	
+                	if(z != 0 && coords[z - 1] / 10 != p / 10) //Check that horizontal ship placement doesn't leave row
+                		return false;
+                	
+                	break;
             }
-            if((p < 0) || (p > 99) || ((p % 10 == 0) && (z != ship.size-1))) { return false; } // if spot already taken/off - NOT valid move
-            if(this.field[p] == 1) { return false; }
+            
+            if(p < 0 || p > 99) //If spot is off the board - NOT valid move
+            	return false;
+            
+            if(this.field[p] == 1) //If spot is already taken - NOT valid move
+            	return false;
+            
             coords[z] = p; // else add to coordinate list
+            this.field[p] = 1;
         }
 
         ship.coordinates = coords;
         this.ships.add(ship);
 
-        for(int temp : ship.coordinates) {this.field[temp] = 1; }
+        for(int temp : ship.coordinates)
+        	this.field[temp] = 1;
+        
         //for(int zz = 0; zz < ship.size; zz++) { field[coords[zz]] = 1; System.out.println("Placed at " + coords[zz] + "\n"); } // for debugging
 
         return true;

@@ -1,13 +1,8 @@
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.*;
-import java.math.*;
 
 public class AI extends Player{
     int difficulty;
@@ -143,30 +138,19 @@ public class AI extends Player{
 	}
 
 	private void placeShip(Ship ship) {
-
-        /* replacing soon - left in so revision works */
-        boolean valid = false;
-        double N = 10;
-        double dir;
-        double orient, pos;
-        int l_size = ship.size;
+        boolean valid;
+        int row, column, direction;
 
         do {
-            double t = (Math.random()*42);
-            dir = Math.pow(-1.0, t);
-            orient = (Math.random()*10 % 2 == 0) ? -1 : 1;
-            pos = (orient==1)  ? ((dir>0) ? ((Math.random()*10.0) % (N-l_size+1))*((Math.random()*10.0) % N)  : (((l_size-1)+((Math.random()*10.0) % (N-l_size+1)))*((Math.random()*10.0) % N))) : ((dir>0) ? ((N*(l_size-1)) + ((Math.random()*10.0) % ((N*N)-(N*(l_size-1))))) : ((Math.random()*10.0) % (N*N-(N*l_size-1))));
-            valid = yourField.place(ship, (int)(pos % 10), (int)(pos/10), (int)dir);
+            direction = (int)(Math.random() * 4);
+            row = (int)(Math.random() * 10);
+            column = (int)(Math.random() * 10);
+            valid = yourField.place(ship, row, column, direction);
 
-            if (!valid) {
+            if (!valid)
                 continue;
-            }
 
             break;
-
         } while (!valid);
-
-
     }
-        
 }
