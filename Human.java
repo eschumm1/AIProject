@@ -1,5 +1,4 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 
@@ -24,35 +23,35 @@ public class Human extends Player {
 	}
 	
 	public void doMove(Player opponent){
-		boolean repeat = false;
-		
 		do{
-			System.out.print("Row: ");
-			try {
-				row = Integer.parseInt(br.readLine());
-			} catch (IOException e) {
-				System.err.println("Invalid entry.");
-				row = -1;
+			try{
+				System.out.println("What location would you like to attack?\n");
+				location[0] = br.readLine();
+				
+				if(location[0].length() != 2)
+					throw new Exception();
+				
+				location = location[0].split("");
+				location[0] = String.valueOf((int)location[0].toUpperCase().charAt(0) - (int)'A');
+				
+				if(Integer.valueOf(location[0]) < 0 || Integer.valueOf(location[0]) > 9
+						|| Integer.valueOf(location[1]) < 0 || Integer.valueOf(location[1]) > 9)
+					throw new Exception();
+				
+			} catch (Exception e){
+				System.out.println("Invalid entry. Please try again.\n");
+				continue;
 			}
+			
+			if(knownMap[Integer.valueOf(location[1]) * 10 + Integer.valueOf(location[0])] != '~') {
+				System.out.println("You already made that move! Please enter a new location.\n");
+				continue;
+			}
+		} while(false);
+		
+		System.out.println(location[0] + " " + location[1]);
 
-			System.out.print("Column: ");
-			try {
-				column = Integer.parseInt(br.readLine());
-			} catch (IOException e) {
-				System.err.println("Invalid entry.");
-				column = -1;
-			}
-
-			if((row < 0) || (row >= 10) || (column < 0) || (column >= 10)) {
-				System.out.println("Bad coordinates. try again \n");
-			}
-			else if(knownMap[row*10 + column] != '~') {
-				System.out.println("You already made that move! \n");
-				row = -1; column = -1;
-			}
-		} while((row >= 10) || (row < 0) || (column >= 10) || (column < 0));
-
-		int pos = row*10 + column;
+		int pos = Integer.valueOf(location[1]) * 10 + Integer.valueOf(location[0]);
 		String hit;
 		hit = opponent.mark(pos); // returns "hit [type]" "miss", "already..." or "destroyed [type]"
 		System.out.println(this.name + " " +  hit);

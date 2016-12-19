@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 public class Main{
 	private static int players, difficulty;
 	private static Player player1, player2, computer1, computer2, current, opponent;
-	private static boolean won = false;
 	
 	public static void main(String[] args) {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -102,8 +101,7 @@ public class Main{
 			}
 			
 			current.doMove(opponent);
-			won = opponent.getLoss();
-		} while(!won);
+		} while(!opponent.getLoss());
 		
 		System.out.println(current.name + " won!");
 	}

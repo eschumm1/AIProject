@@ -14,7 +14,8 @@ public class Ship {
 			case "Carrier": { this.size = 5; break; }
 			case "Cruiser": { this.size = 3; break; }
 			case "Destroyer": { this.size = 2; break; }
-			case "Submarine": { this.size = 3; break; } }
+			case "Submarine": { this.size = 3; break; }
+		}
 		//System.out.println(" New " + this.name + "with size " + this.size + "\n");
 		display = new char[this.size] ; Arrays.fill(display, 'O');
 	}

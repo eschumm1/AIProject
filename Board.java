@@ -103,7 +103,6 @@ public class Board {
             	return false;
             
             coords[z] = p; // else add to coordinate list
-            this.field[p] = 1;
         }
 
         ship.coordinates = coords;
